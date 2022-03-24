@@ -249,10 +249,8 @@ void writeOutHeader(File myfile, int recBytes) {
 }
 
 
-void ButtonUpdate(){
-    //update states of buttons (non working so far)
+void ButtonUpdate(){ //update states of buttons (non working so far), only used for testing, will be replaced by bluetooth
     button1.update();
-    
     if (button1.pressed()){
         stopRecording();
     }        
