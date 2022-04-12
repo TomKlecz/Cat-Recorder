@@ -107,26 +107,26 @@ void loop() {
     }  
 }
 
-void startRecording(char myfirst_file_name, char mysecond_file_name) {
- 
+void startRecording(char* myfirst_file_name, char* mysecond_file_name) {
     while (SD.exists(myfirst_file_name)) { //if the file name already exist then increment the number at the end of the name
-        unsigned int file_name_length = myfirst_file_name.length();
-        while (myfirst_file_name[file_name_length-1]==static_cast<string>(first_name_iterator)) {
+        unsigned int file_name_length = strlen(myfirst_file_name);//myfirst_file_name.length();
+        
+        while (myfirst_file_name[file_name_length-5]==static_cast<char>(first_name_iterator)) {
             first_name_iterator++;
         }
-        myfirst_file_name[file_name_length-1]=static_cast<string>(first_name_iterator);   
-        first_name_iterator++;    
+        myfirst_file_name[file_name_length-5]=static_cast<char>(first_name_iterator);
+        first_name_iterator++;
     }
   
     throat_channel = SD.open(myfirst_file_name, FILE_WRITE); //open the file in write mode
 
     while (SD.exists(mysecond_file_name)) { //if the file name already exist then increment the number at the end of the name
-        unsigned int file_name_length2 = mysecond_file_name.length();
-        while (mysecond_file_name[file_name_length2-1]==static_cast<string>(second_name_iterator)) {
+        unsigned int file_name_length2 = strlen(mysecond_file_name);//.length();
+        while (mysecond_file_name[file_name_length2-5]==static_cast<char>(second_name_iterator)) {
             second_name_iterator++;
         }
-        mysecond_file_name[file_name_length2-1]=static_cast<string>(second_name_iterator);   
-        second_name_iterator++;    
+        mysecond_file_name[file_name_length2-5]=static_cast<char>(second_name_iterator);
+        second_name_iterator++;
     }
   
     variable_channel = SD.open(mysecond_file_name, FILE_WRITE); //open the file in write mode
