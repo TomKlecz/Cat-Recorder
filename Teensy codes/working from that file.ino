@@ -37,6 +37,25 @@ AudioControlSGTL5000     audioShield;
 #define SDCARD_MOSI_PIN  11
 #define SDCARD_SCK_PIN   13
 
+//Define Digital Out pins (alternative to SPI pins) 
+#define GAIN_A_1 15
+#define GAIN_A_2 14
+#define GAIN_A_3 16
+#define GAIN_A_4 17
+
+#define GAIN_B_1 26
+#define GAIN_B_2 24
+#define GAIN_B_3 25
+#define GAIN_B_4 27
+
+#define SEN_CTRL_1 38
+#define SEN_CTRL_2 40
+#define SEN_CTRL_3 41
+#define SEN_CTRL_5 36
+#define SEN_CTRL_6 33
+#define SEN_CTRL_7 30
+#define SEN_CTRL_8 35
+
 //int to store which mode we're in
 bool recording = false;  // false=stopped, true=recording
 
@@ -57,7 +76,72 @@ bool setupbool = false;
 
 void setup() {
     setupbool=true;
+    
+    //DigitalOut GAIN & SEL pins are active low. Setup as HIGH
+    //GAIN_A_1
+    pinMode(GAIN_A_1, OUTPUT);
+    digitalWrite(GAIN_A_1, 1);
 
+    //GAIN_A_2
+    pinMode(GAIN_A_2, OUTPUT);
+    digitalWrite(GAIN_A_2, 1);
+
+    //GAIN_A_3
+    pinMode(GAIN_A_3, OUTPUT);
+    digitalWrite(GAIN_A_3, 1);
+
+    //GAIN_A_4
+    pinMode(GAIN_A_4, OUTPUT);
+    digitalWrite(GAIN_A_4, 1);
+
+    //GAIN_B_1
+    pinMode(GAIN_B_1, OUTPUT);
+    digitalWrite(GAIN_B_1, 1);
+
+    //GAIN_B_2
+    pinMode(GAIN_B_2, OUTPUT);
+    digitalWrite(GAIN_B_2, 1);
+
+    //GAIN_B_3
+    pinMode(GAIN_B_3, OUTPUT);
+    digitalWrite(GAIN_B_3, 1);
+
+    //GAIN_B_4
+    pinMode(GAIN_B_4, OUTPUT);
+    digitalWrite(GAIN_B_4, 1);
+
+    //SEN_CTRL_1
+    pinMode(SEN_CTRL_1, OUTPUT);
+    digitalWrite(SEN_CTRL_1, 1);
+
+    //SEN_CTRL_2
+    pinMode(SEN_CTRL_2, OUTPUT);
+    digitalWrite(SEN_CTRL_2, 1);
+
+    //SEN_CTRL_3
+    pinMode(SEN_CTRL_3, OUTPUT);
+    digitalWrite(SEN_CTRL_3, 1);
+
+    //SEN_CTRL_4
+    pinMode(SEN_CTRL_4, OUTPUT);
+    digitalWrite(SEN_CTRL_4, 1);
+
+    //SEN_CTRL_5
+    pinMode(SEN_CTRL_5, OUTPUT);
+    digitalWrite(SEN_CTRL_5, 1);
+
+    //SEN_CTRL_6
+    pinMode(SEN_CTRL_6, OUTPUT);
+    digitalWrite(SEN_CTRL_6, 1);
+
+    //SEN_CTRL_7
+    pinMode(SEN_CTRL_7, OUTPUT);
+    digitalWrite(SEN_CTRL_7, 1);
+
+    //SEN_CTRL_8
+    pinMode(SEN_CTRL_8, OUTPUT);
+    digitalWrite(SEN_CTRL_8, 1);
+    
     Serial.begin(9600); //debug comms
     HWSERIAL.begin(9600); //bluetooth serial  
     //setup the audio shield for recording
