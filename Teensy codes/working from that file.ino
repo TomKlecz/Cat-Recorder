@@ -398,21 +398,21 @@ bool bluetoothsetup() {
             //Bitwise AND with 1111 binary to keep only the 4 LSBs
             
             int Byte_error;
-            if ((incomingByte==0) || (incomingByte==9)) {
+            if ((incomingByte==0) || (incomingByte > 4)) {
                 Byte_error = false;
-                HWSERIAL.print("ERROR. Value needs to be 1 to 8. Press again");
+                HWSERIAL.print("ERROR. Value needs to be 1 to 4. Press again");
             }
             while (Byte_error == false) {
                 if (HWSERIAL.available() > 0) {
                     incomingByte = HWSERIAL.read();
-                    if (!(incomingByte == 0 || incomingByte == 9)) {
+                    if (!(incomingByte == 0 || incomingByte > 4)) {
                         Byte_error == true;
                     }
                 }
 
             }
             //Ensure the byte (number sent by bluetooth) is 
-                //if the byte is not between 1 and 8 give error
+                //if the byte is not between 1 and 4 give error
                     //Ask for a new byte
                     //Repeat until byte is within range
 
@@ -440,21 +440,21 @@ bool bluetoothsetup() {
             //Bitwise AND with 1111 binary to keep only the 4 LSBs
             
             int Byte_error;
-            if ((incomingByte == 0) || (incomingByte == 9)) {
+            if ((incomingByte == 0) || (incomingByte > 4)) {
                 Byte_error = false;
-                HWSERIAL.print("ERROR. Value needs to be 1 to 8. Press again");
+                HWSERIAL.print("ERROR. Value needs to be 1 to 4. Press again");
             }
             while (Byte_error == false) {
                 if (HWSERIAL.available() > 0) {
                     incomingByte = HWSERIAL.read();
-                    if (!(incomingByte == 0 || incomingByte == 9)) {
+                    if (!(incomingByte == 0 || incomingByte > 4)) {
                         Byte_error == true;
                     }
                 }
 
             }
             //Ensure the byte (number sent by bluetooth) is 
-                //if the byte is not between 1 and 8 give error
+                //if the byte is not between 1 and 4 give error
                     //Ask for a new byte
                     //Repeat until byte is within range
 
@@ -484,8 +484,79 @@ bool bluetoothsetup() {
 
 void mic_select(byte mic_number){
 
+     //set all SEN_CTRL pins HIGH. 
+    //in case one was set low at some point
+    digitalWrite(SEN_CTRL_1, 1);
+    digitalWrite(SEN_CTRL_2, 1);
+    digitalWrite(SEN_CTRL_3, 1);
+    digitalWrite(SEN_CTRL_4, 1);
+    digitalWrite(SEN_CTRL_5, 1);
+    digitalWrite(SEN_CTRL_6, 1);
+    digitalWrite(SEN_CTRL_7, 1);
+    digitalWrite(SEN_CTRL_8, 1);
+
+    //According to the 1-8 number received by bluetooth
+    //Pull the corresponding pin LOW
+    switch (mic_number) {
+        case 1:
+            digitalWrite(SEN_CTRL_1, 0);
+        case 2: 
+            digitalWrite(SEN_CTRL_2, 0);
+        case 3:
+            digitalWrite(SEN_CTRL_3, 0);
+        case 4:
+            digitalWrite(SEN_CTRL_4, 0);
+        case 5:
+            digitalWrite(SEN_CTRL_5, 0);
+        case 6:
+            digitalWrite(SEN_CTRL_6, 0);
+        case 7:
+            digitalWrite(SEN_CTRL_7, 0);
+        case 8:
+            digitalWrite(SEN_CTRL_8, 0);
+    }
+    
 }
 
 void gain_select(byte throat_gain, byte variable_gain){
     
+    //set all GAIN pins HIGH. 
+    //in case one was set low at some point
+    digitalWrite(GAIN_A_1, 1);
+    digitalWrite(GAIN_A_2, 1);
+    digitalWrite(GAIN_A_3, 1);
+    digitalWrite(GAIN_A_4, 1);
+    digitalWrite(GAIN_B_1, 1);
+    digitalWrite(GAIN_B_2, 1);
+    digitalWrite(GAIN_B_3, 1);
+    digitalWrite(GAIN_B_4, 1);
+
+    //For each of the two mic gains
+    
+    //throat_gain
+    //According to the 1-4 number received by bluetooth
+    //Pull the corresponding pin LOW
+    switch (throat_gain) {
+    case 1:
+        digitalWrite(GAIN_A_1, 0);
+    case 2:
+        digitalWrite(GAIN_A_2, 0);
+    case 3:
+        digitalWrite(GAIN_A_3, 0);
+    case 4:
+        digitalWrite(GAIN_A_4, 0);
+    }
+
+    switch (variable_gain) {
+    case 1:
+        digitalWrite(GAIN_B_1, 0);
+    case 2:
+        digitalWrite(GAIN_B_2, 0);
+    case 3:
+        digitalWrite(GAIN_B_3, 0);
+    case 4:
+        digitalWrite(GAIN_B_4, 0);
+    }
+
+
 }
