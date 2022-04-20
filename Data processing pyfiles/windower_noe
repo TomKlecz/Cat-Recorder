@@ -1,0 +1,43 @@
+import numpy as np
+import scipy.io.wavfile as wavfile
+import matplotlib.pyplot as plt
+
+fs,data = wavfile.read("Lea2_4s4.wav")    #Importing data file onto the platform
+print(fs)
+title = ('4s of 2nd purr pattern')
+windowLength = int(fs/128) #1Hz resolution
+
+data_norm = data[:,1] * 1/(2**15)        #Normalizing data, this depends on ADC used
+
+print(len(data_norm))
+#dataOut = np.zeros((int(fs/256),(len(data_norm)-windowLength)),int)
+dataOut = np.zeros(((len(data_norm)-windowLength),int(fs/256)),int)
+
+for i in range(len(data_norm) - windowLength):
+    #print(i)
+    window = data_norm[i : (i + windowLength)]
+
+    spect = np.fft.fft(window)/len(window) #Obtain frequency spectrum
+
+    spect_abs = abs(spect[0:len(spect)//2]) #Absolute value of the values in the frequency domain and slice mirror freqs
+    spect_dB = 20 * np.log10(spect_abs)     #Obtaining the decibel levels for each frequency
+    dataOut[i]=spect_dB
+
+
+
+time = np.linspace(0,(len(data_norm)-windowLength)/fs,(len(data_norm)-windowLength))  #Setting up the time domain
+frequency = np.linspace(0, fs/2, int(len(window)/2))    #Setting up frequency domain
+
+fig1 = plt.figure()
+ax1 = fig1.add_subplot(111, projection='3d')
+ax1.set_title(title, loc='center', wrap=True)
+
+plt.plot_surface(X, Y, dataOut, cmap='jet', linewidth=1)
+  
+ax1.set_xlabel('time (s)')
+ax1.set_ylabel('frequencies (Hz)')
+ax1.set_zlabel('amplitude (dB)')
+ax1.set_zlim(-140, 20)
+ax1.set_ylim(0,5000)
+
+plt.show()
