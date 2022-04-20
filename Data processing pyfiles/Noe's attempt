@@ -1,0 +1,82 @@
+from matplotlib import mlab
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy.io.wavfile as wavfile
+import fir_filter as ff
+import scipy.signal as signal
+
+
+             
+fs, data = wavfile.read("Lea2_10s.wav")           #load data
+data_norm = data[:,1]  #* 1/(2**15)             #normalise data
+title = ('1min of 2nd purr pattern')
+sos_data = signal.butter(6,15000, btype='lowpass', output='sos', fs = fs)
+data_norm = signal.sosfilt(sos_data, data_norm)
+
+def specgram3d(y, srate=48000, ax=None, title=None):
+  if not ax:
+    ax = plt.axes(projection='3d')
+  ax.set_title(title, loc='center', wrap=True)
+  spec, freqs, t = mlab.specgram(y, Fs=srate,mode='magnitude')
+  
+  X, Y, Z = t[None, :], freqs[:, None],  20*np.log(spec)
+
+  ax.plot_surface(X, Y, Z, cmap='jet', linewidth=1)
+  
+  ax.set_xlabel('time (s)')
+  ax.set_ylabel('frequencies (Hz)')
+  ax.set_zlabel('amplitude (dB)')
+  ax.set_zlim(-140, 20)
+  return X, Y, Z
+
+def specgram2d(y, srate=48000, ax=None, title=None):
+  if not ax:
+    ax = plt.axes()
+  ax.set_title(title, loc='center', wrap=True)
+  spec, freqs, t, im = ax.specgram(y, Fs=fs, scale='dB', vmax=0)
+  ax.set_xlabel('time (s)')
+  ax.set_ylabel('frequencies (Hz)')
+  cbar = plt.colorbar(im, ax=ax)
+  cbar.set_label('Amplitude (dB)')
+  cbar.minorticks_on()
+  return spec, freqs, t, im
+
+def freq_peaks(freq,mag):
+    i=0
+    lenghts=mag.shape
+    
+    freq_length= lenghts[0]
+    time_length=lenghts[1]
+                   
+    sums=np.empty(freq_length)
+    
+    while i < freq_length:
+        j=0
+        while j <time_length:
+            sums[i]=sums[i]+mag[i,j]
+            j=j+1
+        i=i+1
+
+    h=0
+    peaks=np.array([])
+    while h < freq_length-1:
+        if h == 0:
+            if sums[0]>sums[1]:
+                peaks=np.append(peaks,freq[h])
+                
+        if h != 0:
+            if sums[h] > sums[h-1] and sums[h] > sums[h+1]:
+                peaks=np.append(peaks,freq[h])
+        h=h+1
+    print(peaks)
+            
+    
+    
+fig1, ax1 = plt.subplots()
+specgram2d(data_norm, srate=fs, title=title, ax=ax1)
+
+fig2, ax2 = plt.subplots(subplot_kw={'projection': '3d'})
+time,frequencies,magnitude=specgram3d(data_norm, srate=fs, title=title, ax=ax2)
+
+freq_peaks(frequencies,magnitude)
+plt.show()
