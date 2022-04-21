@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.io.wavfile as wavfile
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 
 fs,data = wavfile.read("Lea2_4s4.wav")    #Importing data file onto the platform
 print(fs)
@@ -8,8 +9,7 @@ title = ('4s of 2nd purr pattern')
 resolution_factor=256 #put this to 1 for 1Hz res, the bigger the factor the lower the resolution
 windowLength = fs//resolution_factor #1Hz resolutionif window length = fs
 
-data_norm = data[:,1] * 1/(2**15)        #Normalizing data, this depends on ADC used
-print(len(data_norm))
+data_norm = data[:,1] * 1/(2**15)        #Normalizing data, this depends on ADC used, teensy uses 16bits
 
 
 ###Create Axis for plotting###
@@ -44,7 +44,10 @@ for i in range(len(data_norm) - windowLength):
 
     
 fig1 = plt.figure()
-ax1 = fig1.add_subplot(111, projection='3d')
+#ax1 = fig1.add_subplot(111, projection='3d')
+
+ax1 = plt.axes(projection='3d')
+
 
 ax1.set_title(title, loc='center', wrap=True)
 
