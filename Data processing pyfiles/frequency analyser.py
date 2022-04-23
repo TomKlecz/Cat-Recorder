@@ -10,11 +10,16 @@ import numpy as np
 import scipy.io.wavfile as wavfile
 import csv
 
-fs,data = wavfile.read("Lea2_4s4_normal.wav")    #Importing data file onto the platform
+fs,data = wavfile.read("Lea2_10s.wav")    #Importing data file onto the platform
 print(fs)
-title = ('4s of 2nd purr pattern')
-resolution_factor=1 #put this to 1 for 1Hz res, the bigger the factor the lower the resolution
-windowLength = fs//resolution_factor #1Hz resolutionif window length = fs
+downsample_ratio=12
+data=signal.decimate(data,downsample_ratio ,axis=0,zero_phase='True')
+#data=signal.decimate(data,2 ,axis=0,zero_phase='True')
+fs=fs//downsample_ratio
+resolution_factor=0.2 #put this to 1 for 1Hz res, the bigger the factor the lower the resolution
+
+windowLength = int(fs/resolution_factor) #1Hz resolutionif window length = fs
+title = ('10s of 2nd purr pattern')
 
 data_norm = data[:,1] * 1/(2**15)        #Normalizing data, this depends on ADC used, teensy uses 16bits
 
