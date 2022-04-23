@@ -5,7 +5,6 @@
 #include <Audio.h>
 #include <Wire.h>
 
-
 //the teensy Audio shield declarations
 const int myInput = AUDIO_INPUT_LINEIN;
 AudioInputI2S            i2s1;           
@@ -115,12 +114,9 @@ void setup() {
     AudioMemory(240);
     audioShield.enable();
     audioShield.inputSelect(myInput);
-    audioShield.volume(0.8); //set headphone amp volume
+    audioShield.volume(0.5); //set headphone amp volume for monitoring recording
     audioShield.lineInLevel(0); //set codec input dynamic range
     audioShield.lineOutLevel(13); //set codec output dynamic range
-
-
-
 
     setupbool=bluetoothsetup;
 
@@ -183,10 +179,9 @@ bool bluetoothsetup() {
             mic_selected = true;
         }
     }
-    bool throat_mic_gain = false;
-    int throat_gain;
+    bool mic_gain = false;
 
-    while (throat_mic_gain == false) {
+    while (mic_gain == false) {
         if (HWSERIAL.available() > 0) {
             byte incomingByte = HWSERIAL.read();
 
@@ -218,63 +213,19 @@ bool bluetoothsetup() {
             HWSERIAL.println(incomingByte, DEC);
 
             //Assign Byte to throat gain
-            throat_gain = incomingByte;
+            byte gain = incomingByte;
 
             //Break while loop
-            throat_mic_gain = true;
-        }
-    }
-
-    bool variable_mic_gain = false;
-    int variable_gain;
-
-    while (variable_mic_gain == false) {
-        if (HWSERIAL.available() > 0) {
-            byte incomingByte = HWSERIAL.read();
-
-            incomingByte = incomingByte & 15;
-            //Bitwise AND with 1111 binary to keep only the 4 LSBs
-            
-            int Byte_error;
-            if ((incomingByte == 0) || (incomingByte > 4)) {
-                Byte_error = false;
-                HWSERIAL.print("ERROR. Value needs to be 1 to 4. Press again");
-            }
-            while (Byte_error == false) {
-                if (HWSERIAL.available() > 0) {
-                    incomingByte = HWSERIAL.read();
-                    if (!(incomingByte == 0 || incomingByte > 4)) {
-                        Byte_error == true;
-                    }
-                }
-
-            }
-            //Ensure the byte (number sent by bluetooth) is 
-                //if the byte is not between 1 and 4 give error
-                    //Ask for a new byte
-                    //Repeat until byte is within range
-
-            Serial.print("UART received: ");
-            Serial.println(incomingByte, DEC);
-            HWSERIAL.print("UART received:");
-            HWSERIAL.println(incomingByte, DEC);
-
-            //Assign Byte to throat gain
-            variable_gain = incomingByte;
-
-            //Break while loop
-            variable_mic_gain = true;
+            mic_gain = true;
         }
     }
 
     //call gain_setting function with the throat_gain and variable_gain as arguments
-    gain_select(throat_gain, variable_gain);
+    gain_select(gain);
 
     //put the 3 bools to false 
     mic_selected = false;
-    throat_mic_gain = true;
-    variable_mic_gain = true;
-
+    mic_gain = false;
     return false;
 }
 
@@ -314,7 +265,7 @@ void mic_select(byte mic_number){
     
 }
 
-void gain_select(byte throat_gain, byte variable_gain){
+void gain_select(byte gain){
     
     //set all GAIN pins HIGH. 
     //in case one was set low at some point
@@ -332,27 +283,18 @@ void gain_select(byte throat_gain, byte variable_gain){
     //throat_gain
     //According to the 1-4 number received by bluetooth
     //Pull the corresponding pin LOW
-    switch (throat_gain) {
+    switch (gain) {
     case 1:
         digitalWrite(GAIN_A_1, 0);
-    case 2:
-        digitalWrite(GAIN_A_2, 0);
-    case 3:
-        digitalWrite(GAIN_A_3, 0);
-    case 4:
-        digitalWrite(GAIN_A_4, 0);
-    }
-
-    switch (variable_gain) {
-    case 1:
         digitalWrite(GAIN_B_1, 0);
     case 2:
+        digitalWrite(GAIN_A_2, 0);
         digitalWrite(GAIN_B_2, 0);
     case 3:
+        digitalWrite(GAIN_A_3, 0);
         digitalWrite(GAIN_B_3, 0);
     case 4:
+        digitalWrite(GAIN_A_4, 0);
         digitalWrite(GAIN_B_4, 0);
     }
-
-
 }
