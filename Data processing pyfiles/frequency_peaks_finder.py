@@ -8,25 +8,16 @@ def freq_peaks(freq,mag):
     time_length=lenghts[1]
                    
     sums=np.empty(freq_length)
-    
-    while i < freq_length:
-        j=0
-        while j <time_length:
-            sums[i]=sums[i]+mag[i,j]
-            j=j+1
-        i=i+1
-
-    h=0
-    peaks=np.array([])
-    while h < freq_length-1:
-        if h == 0:
-            if sums[0]>sums[1]:
-                peaks=np.append(peaks,freq[h])
-                
-        if h != 0:
-            if sums[h] > sums[h-1] and sums[h] > sums[h+1]:
-                peaks=np.append(peaks,freq[h])
-        h=h+1
+    peaks=np.zeros((time_length,freq_length), dtype='float')
+    for i in range (time_length):
+        for j in range (freq_length):
+            if j==0:
+                if mag[i,j]>mag[i,j+1]:
+                    peaks[i,j]=freq[j]
+            else:
+                if mag[i,j] > mag[i,j-1] and mag[i,j] > sums[i,j+1]:
+                    peaks[i,j]=freq[j]
+            
     print(peaks)
     
 frequency = np.genfromtxt('Y.csv', delimiter=',')
