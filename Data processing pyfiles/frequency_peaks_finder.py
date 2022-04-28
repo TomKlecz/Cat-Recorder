@@ -2,7 +2,7 @@ import numpy as np
 import csv
 import sys
 
-def freq_peaks(freq,mag):
+def freq_peaks(freq,mag,threshold):
     i=0
     lenghts=mag.shape
     
@@ -14,15 +14,15 @@ def freq_peaks(freq,mag):
         for i in range (freq_length-1):
             
             if i==0:
-                if mag[i,j]>mag[i+1,j]:
+                if mag[i,j]>(mag[i+1,j]+threshold):
                     peaks[i,j]=freq[i]
                     
             elif i==freq_length-1:
-                if mag[i,j]>mag[i-1,j]:
+                if mag[i,j]>(mag[i-1,j]+threshold):
                     peaks[i,j]=freq[i]
 
             else:
-                if mag[i,j] > mag[i-1,j] and mag[i,j] > mag[i+1,j]:
+                if mag[i,j] > (mag[i-1,j]+threshold) and mag[i,j] > (mag[i+1,j]+threshold):
                     
                     peaks[i,j]=freq[i]
             
@@ -33,13 +33,14 @@ reference = sys.argv[1]
 
 frequency = np.genfromtxt(reference + '_Y.csv', delimiter=',')
 magnitude = np.genfromtxt(reference + '_Z.csv', delimiter=',')
+thresh=0.5 
 
 Y=np.zeros((len(frequency),1),float)
 for i in range(len(frequency)):
     Y[i][0]=frequency[i]
     
     
-freq_analysis=freq_peaks(Y,magnitude)
+freq_analysis=freq_peaks(Y,magnitude,thresh)
 
 with open(reference + "_fres_analysis.csv", "w") as f:
     writer = csv.writer(f)
