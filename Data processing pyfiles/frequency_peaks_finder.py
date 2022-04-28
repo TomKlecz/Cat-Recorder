@@ -1,5 +1,6 @@
 import numpy as np
 import csv
+import sys
 
 def freq_peaks(freq,mag):
     i=0
@@ -27,8 +28,11 @@ def freq_peaks(freq,mag):
             
     return(peaks)
     
-frequency = np.genfromtxt('Y.csv', delimiter=',')
-magnitude = np.genfromtxt('Z.csv', delimiter=',')
+
+reference = sys.argv[1]
+
+frequency = np.genfromtxt(reference + '_Y.csv', delimiter=',')
+magnitude = np.genfromtxt(reference + '_Z.csv', delimiter=',')
 
 Y=np.zeros((len(frequency),1),float)
 for i in range(len(frequency)):
@@ -37,6 +41,6 @@ for i in range(len(frequency)):
     
 freq_analysis=freq_peaks(Y,magnitude)
 
-with open("fres_analysis.csv", "w") as f:
+with open(reference + "_fres_analysis.csv", "w") as f:
     writer = csv.writer(f)
     writer.writerows(freq_analysis)

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 ### set the distance between point for averaging
 spacingParam = 2
 
-spaceAllowed = 4
+spaceAllowed = 2
 
 ### maximum number of samples to average across
 averageLength = 5
@@ -86,11 +86,12 @@ tracesTrans = np.transpose(traces)
 fig = plt.figure(figsize =(14, 9))
 ax = plt.axes()
 
-# for i in range(traces.shape[0]):
-#     ax.plot(traces[i], time,  ',', color='black')
+for i in range(traces.shape[0]):
+    ax.plot(traces[i], time,  ',', color='black')
 
-for i in range(tracesTrans.shape[0]):
-    ax.plot(tracesTrans[i])
+# for i in range(tracesTrans.shape[0]):
+#     if tracesTrans[i] > 0:
+#         ax.plot(tracesTrans[i])
 
 ax.set_title('plot of local peaks')
 
